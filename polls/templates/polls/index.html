@@ -1,13 +1,44 @@
-{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/bootstrap.min.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <title>Enquetes</title>
+</head>
 
-<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
+<body>
 
-{% if latest_question_list %}
-    <ul>
-    {% for question in latest_question_list %}
-        <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No polls are available.</p>
-{% endif %}
+ <center>
+  <div class="col-lg-8">
+
+    <div class="page-header" style="padding-top:50px;">
+     <h2 id="title" class="profile-username text-center">Polls <i class="material-icons">poll</i></h2>
+
+      <h1 id="tables" class="profile-username text-center" style="padding-top:20px">Choose to vote</h1>
+    </div><!-- .page-header -->
+
+      <div class="bs-component">
+        {% if latest_question_list %}
+            <ul class="list-group">
+            {% for question in latest_question_list %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a>
+                    <span class="badge badge-primary badge-pill">{{ question.total }}</span>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No polls are available.</p>
+        {% endif %}
+      </div>
+
+   </div><!-- .col-lg-10 -->
+ </center>
+
+</body>
+</html>
+

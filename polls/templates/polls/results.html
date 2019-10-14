@@ -1,9 +1,104 @@
-<h1>{{ question.question_text }}</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/bootstrap.min.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <title>Enquetes</title>
+</head>
 
-<ul>
-{% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
-{% endfor %}
-</ul>
+<body>
 
-<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+ <center>
+  <div class="col-lg-10">
+
+    <div class="page-header" style="padding-top:50px;">
+     <h2 id="title" class="profile-username text-center">Polls <i class="material-icons">poll</i></h2>
+
+      <a href="{% url 'polls:index' %}">
+       <button class="source-button btn btn-primary btn-xs btn-sm" role="button" tabindex="0">Back to Pools</button>
+      </a>
+
+      <h1 id="tables" class="profile-username text-center" style="padding-top:20px">{{ question.question_text }}</h1>
+    </div><!-- .page-header -->
+
+    <div class="bs-component">
+
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+
+        {% for choice in question.choice_set.all %}
+
+          <tr class="table-secondary">
+            <td></td>
+            <th scope="row">{{ choice.choice_text }}</th>
+            <td>{{ choice.votes }} vote{{ choice.votes|pluralize }}</td>
+          </tr>
+
+        {% endfor %}
+
+        </tbody>
+      </table>
+
+    </div><!-- .bs-component -->
+
+     <div class="chartjs-wrapper" style="display:block; width:400px; height: 400px;">
+        <canvas id="votesChart"></canvas>
+     <script>
+        var ctx = document.getElementById("votesChart");
+        var names = JSON.parse('{{ labels|safe }}');
+        var votes = JSON.parse('{{ votes|safe }}');
+        var productsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: names,
+                datasets: [{
+                    label: 'Votos',
+                    data: votes,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+     </script>
+    </div><!-- .chartjs-wrapper -->
+
+   </div><!-- .col-lg-10 -->
+ </center>
+
+</body>
+</html>
+

@@ -1,12 +1,53 @@
-<h1>{{ question.question_text }}</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/bootstrap.min.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <title>Enquetes</title>
+</head>
 
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<body>
 
-<form action="{% url 'polls:vote' question.id %}" method="post">
-{% csrf_token %}
-{% for choice in question.choice_set.all %}
-    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
-{% endfor %}
-<input type="submit" value="Vote">
-</form>
+ <center>
+  <div class="col-lg-5">
+
+    <div class="page-header" style="padding-top:50px;">
+     <h2 id="title" class="profile-username text-center">Polls <i class="material-icons">poll</i></h2>
+      <a href="{% url 'polls:index' %}">
+       <button class="source-button btn btn-primary btn-xs btn-sm" role="button" tabindex="0">Back to Pools</button>
+      </a>
+
+      <h1 id="tables" class="profile-username text-center" style="padding-top:20px">{{ question.question_text }}</h1>
+    </div><!-- .page-header -->
+
+      <div class="bs-component">
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+        <form action="{% url 'polls:vote' question.id %}" method="post">
+        {% csrf_token %}
+
+         <ul class="list-group mb-3">
+        {% for choice in question.choice_set.all %}
+
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+            </li>
+
+        {% endfor %}
+        </ul>
+
+        <input type="submit" value="Vote" class="source-button btn btn-info btn-xs btn-lg">
+        </form>
+      </div>
+
+   </div><!-- .col-lg-10 -->
+ </center>
+
+</body>
+</html>
+
