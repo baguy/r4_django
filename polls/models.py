@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 
 
 class Question(models.Model):
@@ -11,6 +12,11 @@ class Question(models.Model):
 
     def __str__(self):
         return self.question_text
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        return super().get(self, request, args, kwargs)
 
     def was_published_recently(self):
         now = timezone.now()

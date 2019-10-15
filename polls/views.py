@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
@@ -6,6 +6,7 @@ from django.utils import timezone
 import json
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.contrib.sessions.models import Session
 
 from .models import Question, Choice
 
@@ -32,11 +33,50 @@ class DetailView(generic.DetailView):
         return Question.objects.filter(pub_date__lte=timezone.now())
 
 
+def vote(request, question_id):
+    if request.method == 'POST':
+        all_sessions = Session.objects.all()
+
+        if 'sessionid' in request.COOKIES:
+            cookie = request.COOKIES['sessionid']
+        else:
+            cookie = 'a'
+
+        first_vote = True
+        for session in all_sessions:
+            if cookie == str(session):
+                first_vote = False
+                context = {
+                    'fist_vote': first_vote,
+                }
+                return render(request, 'polls/message.html', context)
+            else:
+                question = get_object_or_404(Question, pk=question_id)
+                try:
+                    selected_choice = question.choice_set.get(pk=request.POST['choice'])
+                    question.total += 1
+                except (KeyError, Choice.DoesNotExist):
+                    # Redisplay the question voting form.
+                    return render(request, 'polls/detail.html', {
+                        'question': question,
+                        'error_message': "You didn't select a choice.",
+                    })
+                else:
+                    selected_choice.votes += 1
+                    selected_choice.save()
+                    question.save()
+                    return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+
 def result(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     all_choices = Choice.objects.all()
-    labels = [obj.choice_text for obj in all_choices]
-    votes = [obj.votes for obj in all_choices]
+    labels = []
+    votes = []
+    for choice in all_choices:
+        if choice.question_id == question_id:
+            labels.append(choice.choice_text)
+            votes.append(choice.votes)
 
     context = {
         'question': question,
@@ -45,27 +85,6 @@ def result(request, question_id):
     }
 
     return render(request, 'polls/results.html', context)
-
-
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
-        question.total += 1
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(request, 'polls/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice.",
-        })
-    else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        question.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

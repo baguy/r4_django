@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/bootstrap.min.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <title>Enquetes</title>
+</head>
+
+<body>
+
+ <center>
+  <div class="col-lg-8">
+
+    <div class="page-header" style="padding-top:50px;">
+     <h2 id="title" class="profile-username text-center">Polls <i class="material-icons">poll</i></h2>
+      <a href="{% url 'polls:index' %}">
+       <button class="source-button btn btn-primary btn-xs btn-sm" role="button" tabindex="0">Back to Pools</button>
+      </a>
+
+     <div class="alert alert-info alert-dismissible alert mt-3" role="alert" id="alertEditar">
+      You can only vote once.
+       <a href="#" class="close" data-dismiss="alert" aria-label="close" style="text-decoration:none">x</a>
+     </div>
+
+   </div><!-- .col-lg-10 -->
+ </center>
+
+</body>
+</html>
+

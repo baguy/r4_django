@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import (
 # django.contrib.admin.autodiscover()
 
 urlpatterns = [
+    path('', include('polls.urls')),
     path('polls/', include('polls.urls')),
     path('admin/', admin.site.urls),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

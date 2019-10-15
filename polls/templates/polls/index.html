@@ -21,6 +21,13 @@
       <h1 id="tables" class="profile-username text-center" style="padding-top:20px">Choose to vote</h1>
     </div><!-- .page-header -->
 
+    {% if first_vote == True %}
+        <div class="alert alert-info alert-dismissible alertEditar" role="alert" id="alertEditar">
+          You can only vote once.
+           <a href="#" class="close" data-dismiss="alert" aria-label="close" style="text-decoration:none">x</a>
+        </div>
+    {% endif %}
+
       <div class="bs-component">
         {% if latest_question_list %}
             <ul class="list-group">
@@ -32,7 +39,7 @@
             {% endfor %}
             </ul>
         {% else %}
-            <p>No polls are available.</p>
+            <p>No polls are available.</p>{{first_vote}}
         {% endif %}
       </div>
 
